@@ -1,19 +1,10 @@
-const menuOptions = [
-    {name: "X-Salada", price: 30, vegan: false, src: "./assets/xsalada.jpeg"},
-    {name: "X-Bacon", price: 34, vegan: false, src: "./assets/xbacon.png"},
-    {name: "X-Bacon Egg", price: 39, vegan: false, src: "./assets/bacon-egg.png"},
-    {name: "Monstruoso", price: 50, vegan: false, src: "./assets/monstruoso.png"},
-    {name: "Big Vegano", price: 55, vegan: true, src: "./assets/monstruoso-vegan.png"},
-    {name: "X-Vegano", price: 45, vegan: true, src: "./assets/xvegan.png"}
-]
-
 const main = document.querySelector(".main-content")
 const forEachBTN = document.querySelector("#forEach")
 const mapBTN = document.querySelector("#map")
 const reduceBTN = document.querySelector("#reduce")
 const filterBTN = document.querySelector("#filter")
 
-const formatarValor = price => {
+const formatPrice = price => {
     const formatedValue = new Intl.NumberFormat("pt-BR", {
         style: "currency",
         currency: "BRL"
@@ -24,58 +15,48 @@ const formatarValor = price => {
 
 const showProducts = list => {
     main.innerHTML = ""
+    main.style.backgroundColor = "#634c43"
 
     list.forEach( product => {
         main.innerHTML += `
             <div class="card">
                 <img src=${product.src}>
                 <p class="product-name">${product.name}</p>
-                <p class="product-price">${formatarValor(product.price)}</p>
+                <p class="product-price">${formatPrice(product.price)}</p>
             </div>
         `
     })
 }
 
 const giveDescont = list => {
-    main.innerHTML = ""
+    main.style.backgroundColor = "#634c43"
 
-    list.map(product => {
-        main.innerHTML += `
-            <div class="card">
-                <img src=${product.src}>
-                <p class="product-name">${product.name}</p>
-                <p class="product-price">${formatarValor(product.price - (product.price * 0.10))}</p>
-            </div>
-        `
-    })
+    const newPrices = list.map( product => ({
+        ...product,
+        price: product.price - (product.price * 0.10)
+    }))
+
+    showProducts(newPrices)
 }
 
 const totalValue = list => {
-    main.innerHTML = ""
+    main.style.backgroundColor = "#634c43"
 
-    const value = list.reduce((acc, product) => {
-        return acc + product.price
-    }, 0)
+    const finalValue = list.reduce((acc, curr) => acc + curr.price, 0)
 
     main.innerHTML = `
         <div class="card">
-            <p class="total-price">A soma do valor de todos os produtos é: ${formatarValor(value)}</p>
+            <p class="total-price">A soma do valor de todos os produtos é: ${formatPrice(finalValue)}</p>
         </div>
     `
 }
 
 const filterVegans = list => {
-    main.innerHTML = ""
+    main.style.backgroundColor = "#634c43"
+    
+    const filtredProducts = list.filter( product => product.vegan)
 
-    list.filter( product => {
-        if (product.vegan === true) return main.innerHTML += `
-            <div class="card">
-                <img src=${product.src}>
-                <p class="product-name">${product.name}</p>
-                <p class="product-price">${formatarValor(product.price)}</p>
-            </div>
-        `
-    })
+    showProducts(filtredProducts)
 }
 
 forEachBTN.addEventListener("click", () => showProducts(menuOptions))
